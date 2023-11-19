@@ -24,6 +24,7 @@ namespace ImageProcessingActivity
             pictureBox1.Image.Tag = "default";
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            CenterToScreen();
 
         }
 
@@ -57,7 +58,6 @@ namespace ImageProcessingActivity
             {
                 try
                 {
-                    loaded = new Bitmap(pictureBox1.Image);
                     processed = new Bitmap(loaded.Width, loaded.Height);
 
                     for (int x = 0; x < loaded.Width; x++)
@@ -88,7 +88,6 @@ namespace ImageProcessingActivity
             {
                 try
                 {
-                    loaded = new Bitmap(pictureBox1.Image);
                     processed = new Bitmap(loaded.Width, loaded.Height);
                     Color pixel;
                     byte gray;
@@ -123,7 +122,6 @@ namespace ImageProcessingActivity
             {
                 try
                 {
-                    loaded = new Bitmap(pictureBox1.Image);
                     processed = new Bitmap(loaded.Width, loaded.Height);
                     Color pixel;
                     for(int x = 0; x < loaded.Width; x++)
@@ -151,24 +149,20 @@ namespace ImageProcessingActivity
             {
                 try
                 {
-                    loaded = new Bitmap(pictureBox1.Image);
                     processed = new Bitmap(loaded.Width, loaded.Height);
                     Color pixel;
-                    Byte grayData;
+                    int gray;
 
-                    // Convert the image to grayscale
                     for (int x = 0; x < loaded.Width; x++)
                     {
                         for (int y = 0; y < loaded.Height; y++)
                         {
                             pixel = loaded.GetPixel(x, y);
-                            grayData = (byte)((pixel.R + pixel.G + pixel.B) / 3);
-                            processed.SetPixel(x, y, Color.FromArgb(grayData, grayData, grayData));
+                            gray = (byte)((pixel.R + pixel.G + pixel.B) / 3);
+                            processed.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
                         }
                     }
-
-                    // Calculate the histogram data
-                    int[] histdata = new int[256];
+                    int[] histdata = new int[processed.Width];
                     for (int x = 0; x < processed.Width; x++)
                     {
                         for (int y = 0; y < processed.Height; y++)
@@ -178,10 +172,7 @@ namespace ImageProcessingActivity
                         }
                     }
 
-                    // Create a new bitmap for displaying the histogram
-                    Bitmap histogramBitmap = new Bitmap(256, processed.Height);
-
-                    // Clear the bitmap
+                    Bitmap histogramBitmap = new Bitmap(processed.Width, processed.Height);
                     for (int x = 0; x < histogramBitmap.Width; x++)
                     {
                         for (int y = 0; y < histogramBitmap.Height; y++)
@@ -190,16 +181,13 @@ namespace ImageProcessingActivity
                         }
                     }
 
-                    // Draw the histogram on the bitmap
-                    for (int x = 0; x < 256; x++)
+                    for (int x = 0; x < histogramBitmap.Width; x++)
                     {
-                        for (int y = 0; y < Math.Min(histdata[x] / 5, histogramBitmap.Height - 1); y++)
+                        for (int y = 0; y < Math.Min(histdata[x] / 5, histogramBitmap.Height); y++)
                         {
                             histogramBitmap.SetPixel(x, (histogramBitmap.Height - 1) - y, Color.Black);
                         }
                     }
-
-                    // Display the histogram bitmap in pictureBox2
                     pictureBox2.Image = histogramBitmap;
                 }
                 catch (Exception ex)
@@ -219,7 +207,6 @@ namespace ImageProcessingActivity
             {
                 try
                 {
-                    loaded = new Bitmap(pictureBox1.Image);
                     processed = new Bitmap(loaded.Width, loaded.Height);
                     Color pixel;
                     for (int x = 0; x < loaded.Width; x++)
@@ -248,5 +235,51 @@ namespace ImageProcessingActivity
                 MessageBox.Show("Please import an image into pictureBox1 first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (IsImageLoaded())
+            {
+                try
+                {
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.Filter = "Bitmap Image|*.bmp|JPEG Image|*.jpg|PNG Image|*.png";
+                        saveFileDialog.Title = "Save Processed Image";
+                        saveFileDialog.ShowDialog();
+                        if(saveFileDialog.FileName != "")
+                        {
+                            processed.Save(saveFileDialog.FileName);
+                            MessageBox.Show("Image saved successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                } catch (Exception ex)
+                {
+                    MessageBox.Show("Error exporting image: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            } else
+            {
+                MessageBox.Show("Please process an image first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (IsImageLoaded())
+            {
+                loaded = null;
+                processed = null;
+
+                pictureBox1.Image = Properties.Resources.no_image;
+                pictureBox2.Image = Properties.Resources.no_image;
+                pictureBox1.Image.Tag = "default";
+                MessageBox.Show("Image closed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("No image to close.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
     }
 }

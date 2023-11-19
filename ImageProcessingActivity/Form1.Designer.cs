@@ -35,6 +35,8 @@ namespace ImageProcessingActivity
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filtersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.greyscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorInversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +56,7 @@ namespace ImageProcessingActivity
             this.pictureBox1.Location = new System.Drawing.Point(30, 48);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(640, 480);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -62,6 +65,7 @@ namespace ImageProcessingActivity
             this.pictureBox2.Location = new System.Drawing.Point(706, 48);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(640, 480);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
@@ -80,7 +84,9 @@ namespace ImageProcessingActivity
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importImageToolStripMenuItem});
+            this.importImageToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.closeToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -94,6 +100,20 @@ namespace ImageProcessingActivity
             this.importImageToolStripMenuItem.Text = "Import image";
             this.importImageToolStripMenuItem.ToolTipText = "Import an image";
             this.importImageToolStripMenuItem.Click += new System.EventHandler(this.importImageToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // filtersToolStripMenuItem
             // 
@@ -110,35 +130,35 @@ namespace ImageProcessingActivity
             // greyscaleToolStripMenuItem
             // 
             this.greyscaleToolStripMenuItem.Name = "greyscaleToolStripMenuItem";
-            this.greyscaleToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.greyscaleToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
             this.greyscaleToolStripMenuItem.Text = "Greyscale";
             this.greyscaleToolStripMenuItem.Click += new System.EventHandler(this.greyscaleToolStripMenuItem_Click);
             // 
             // colorInversionToolStripMenuItem
             // 
             this.colorInversionToolStripMenuItem.Name = "colorInversionToolStripMenuItem";
-            this.colorInversionToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.colorInversionToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
             this.colorInversionToolStripMenuItem.Text = "Color Inversion";
             this.colorInversionToolStripMenuItem.Click += new System.EventHandler(this.colorInversionToolStripMenuItem_Click);
             // 
             // histogramToolStripMenuItem
             // 
             this.histogramToolStripMenuItem.Name = "histogramToolStripMenuItem";
-            this.histogramToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.histogramToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
             this.histogramToolStripMenuItem.Text = "Histogram";
             this.histogramToolStripMenuItem.Click += new System.EventHandler(this.histogramToolStripMenuItem_Click);
             // 
             // sepiaToolStripMenuItem
             // 
             this.sepiaToolStripMenuItem.Name = "sepiaToolStripMenuItem";
-            this.sepiaToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.sepiaToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
             this.sepiaToolStripMenuItem.Text = "Sepia";
             this.sepiaToolStripMenuItem.Click += new System.EventHandler(this.sepiaToolStripMenuItem_Click);
             // 
             // basicCopyToolStripMenuItem
             // 
             this.basicCopyToolStripMenuItem.Name = "basicCopyToolStripMenuItem";
-            this.basicCopyToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.basicCopyToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
             this.basicCopyToolStripMenuItem.Text = "Basic Copy";
             this.basicCopyToolStripMenuItem.Click += new System.EventHandler(this.basicCopyStripMenuItem_Click);
             // 
@@ -210,6 +230,8 @@ namespace ImageProcessingActivity
         private System.Windows.Forms.ToolStripMenuItem basicCopyToolStripMenuItem;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
     }
 }
 
