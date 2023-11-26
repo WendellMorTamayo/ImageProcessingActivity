@@ -299,6 +299,35 @@ namespace ImageProcessingActivity
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (cbDevices.SelectedIndex >= 0 && cbDevices.SelectedIndex < devices.Length)
+            {
+                Device d = DeviceManager.GetDevice(cbDevices.SelectedIndex);
+
+                d.Sendmessage();
+
+                IDataObject data = Clipboard.GetDataObject();
+                if (data != null && data.GetDataPresent(DataFormats.Bitmap))
+                {
+                    Image clipboardImage = (Image)(data.GetData("System.Drawing.Bitmap", true));
+
+                    pictureBox1.Image = new Bitmap(clipboardImage);
+                    pictureBox1.Tag = "not_default";
+
+                    ProcessImages();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to retrieve image from the clipboard.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a webcam device from the list.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ProcessImages()
+        {
             if (IsImageLoaded())
             {
                 try
