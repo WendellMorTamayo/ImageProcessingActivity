@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using WebCamLib;
 
 namespace ImageProcessingActivity
 {
@@ -15,17 +10,22 @@ namespace ImageProcessingActivity
     {
         Bitmap loaded;
         Bitmap processed;
+        Bitmap imageB, imageA, colorGreen;
+        private Device selectedDevice;
+        private Device[] devices;
 
         public Form1()
         {
             InitializeComponent();
             pictureBox1.Image = Properties.Resources.no_image;
             pictureBox2.Image = Properties.Resources.no_image;
+            pictureBox3.Image = Properties.Resources.no_image;
             pictureBox1.Image.Tag = "default";
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             CenterToScreen();
-
+            LoadWebcamDevices();
         }
 
         private void importImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -114,6 +114,21 @@ namespace ImageProcessingActivity
         private bool IsImageLoaded()
         {
             return pictureBox1.Image.Tag?.ToString() != "default";
+        }
+
+        private void LoadWebcamDevices()
+        {
+            cbDevices.Items.Clear();
+            devices = DeviceManager.GetAllDevices();
+            if (devices.Length > 0)
+            {
+                cbDevices.Items.AddRange(devices);
+                cbDevices.SelectedIndex = 0;
+            }
+            else
+            {
+                MessageBox.Show("No webcam device found.");
+            }
         }
 
         private void colorInversionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -236,6 +251,108 @@ namespace ImageProcessingActivity
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            openFileDialog2.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif|All Files|*.*";
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+        }
+
+        private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                imageB = new Bitmap(openFileDialog2.FileName);
+                pictureBox1.Image = imageB;
+                pictureBox1.Tag = "not_default";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading image: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            openFileDialog3.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif|All Files|*.*";
+            if (openFileDialog3.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+        }
+
+        private void openFileDialog3_FileOk(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                imageA = new Bitmap(openFileDialog3.FileName);
+                pictureBox2.Image = imageA;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading image: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (IsImageLoaded())
+            {
+                try
+                {
+                    Bitmap resultImage = new Bitmap(imageB.Width, imageB.Height);
+                    Color mygreen = Color.FromArgb(0, 255, 0);
+                    int greygreen = (mygreen.R + mygreen.G + mygreen.B) / 3;
+                    int threshold = 5;
+
+                    for (int x = 0; x < imageB.Width; x++)
+                    {
+                        for (int y = 0; y < imageB.Height; y++)
+                        {
+                            Color pixel = imageB.GetPixel(x, y);
+                            Color backpixel = imageA.GetPixel(x, y);
+                            int grey = (pixel.R + pixel.G + pixel.B) / 3;
+                            int subtractValue = Math.Abs(grey - greygreen);
+
+                            if (subtractValue < threshold)
+                            {
+                                resultImage.SetPixel(x, y, backpixel);
+                            }
+                            else
+                            {
+                                resultImage.SetPixel(x, y, pixel);
+                            }
+                        }
+                    }
+                    pictureBox3.Image = resultImage;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error processing images: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please import images into pictureBox1 and pictureBox2 first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (cbDevices.SelectedIndex >= 0 && cbDevices.SelectedIndex < devices.Length)
+            {
+                selectedDevice = devices[cbDevices.SelectedIndex];
+                selectedDevice.ShowWindow(pictureBox1);
+            }
+            else
+            {
+                MessageBox.Show("Please select a webcam device from the list.");
+            }
+        }
+
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (IsImageLoaded())
@@ -269,7 +386,6 @@ namespace ImageProcessingActivity
             {
                 loaded = null;
                 processed = null;
-
                 pictureBox1.Image = Properties.Resources.no_image;
                 pictureBox2.Image = Properties.Resources.no_image;
                 pictureBox1.Image.Tag = "default";
